@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
-const BlogPost = require("../models/blogpost.model")
-const middleware = require("../middleware")
+const BlogPost = require("../models/blogpost.model");
+const middleware = require("../middleware");
 const multer = require("multer");
 
 const storage = multer.diskStorage({
@@ -9,7 +9,7 @@ const storage = multer.diskStorage({
     cb(null, "./uploads");
   },
   filename: (req, file, cb) => {
-    cb(null, req.params.id + ".jpg")
+    cb(null, req.params.id + ".jpg");
   },
 });
 
@@ -46,10 +46,10 @@ router.route("/Add").post(middleware.checkToken, (req, res) => {
   blogpost
     .save()
     .then((result) => {
-      res.json({ data: result["_id"] })
+      res.json({ data: result["_id"] });
     })
     .catch((err) => {
-      console.log(err), res.json({ err: err })
+      console.log(err), res.json({ err: err });
     });
 });
 
@@ -63,7 +63,7 @@ router.route("/getOwnBlog").get(middleware.checkToken, (req, res) => {
 router.route("/getOtherBlog").get(middleware.checkToken, (req, res) => {
   BlogPost.find({ username: { $ne: req.decoded.username } }, (err, result) => {
     if (err) return res.json(err);
-    return res.json({ data: result })
+    return res.json({ data: result });
   });
 });
 
@@ -74,12 +74,12 @@ router.route("/delete/:id").delete(middleware.checkToken, (req, res) => {
       $and: [{ username: req.decoded.username }, { _id: req.params.id }],
     },
     (err, result) => {
-      if (err) return res.adson(err);
+      if (err) return res.json(err);
       else if (result) {
         console.log(result);
-        return res.adson("Blog deleted")
+        return res.json("Blog deleted");
       }
-      return res.json("Blog not deleted")
+      return res.json("Blog not deleted");
     }
   );
 });
